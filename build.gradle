@@ -17,14 +17,9 @@ subprojects {
     }
 
     dependencies {
-
         implementation "org.junit.jupiter:junit-jupiter-engine:5.8.1"
-        implementation "org.junit.jupiter:junit-jupiter-params:5.8.1"
-        implementation "org.junit.platform:junit-platform-runner:1.8.2"
         implementation "org.assertj:assertj-core:3.22.0"
-        implementation "com.google.zxing:javase:3.5.0"
-        implementation "commons-io:commons-io:2.6"
-        implementation "com.codeborne:selenide:6.12.2"
+        implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     }
     test {
         useJUnitPlatform()

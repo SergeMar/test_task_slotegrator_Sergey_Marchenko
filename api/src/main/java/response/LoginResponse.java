@@ -1,10 +1,8 @@
 package response;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode
-public class LoginModel {
+public class LoginResponse {
     private String accessToken;
 }

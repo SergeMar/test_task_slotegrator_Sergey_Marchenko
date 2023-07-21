@@ -1,10 +1,9 @@
 package body;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import response.UserResponse;
 
 @Data
-@EqualsAndHashCode
 public class UserBody {
     private String currency_code;
     private String email;
@@ -26,5 +25,14 @@ public class UserBody {
         this.password_repeat = password;
         this.surname = surname;
         this.username = username;
+    }
+
+    public UserResponse toResponse(){
+        return new UserResponse(
+                this.email,
+                this.name,
+                this.surname,
+                this.username
+        );
     }
 }

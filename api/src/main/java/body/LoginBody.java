@@ -1,10 +1,8 @@
 package body;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode
 public class LoginBody {
     private String email;
     private String password;

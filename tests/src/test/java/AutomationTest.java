@@ -1,57 +1,53 @@
 import body.UserBody;
 import org.junit.jupiter.api.Test;
-import response.UserModel;
+import response.LoginResponse;
+import response.UserResponse;
 
 import java.util.Comparator;
 import java.util.List;
 
-import static data.DataUser.usersRequest;
+import static data.DataUser.usersData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AutomationTest extends TestBase {
 
     @Test
     void getAccessTokenTest() {
-        String userToken = api.controller().getToken();
-        assertThat(userToken).isNotNull();
+        LoginResponse response = api.controller().login();
+        assertThat(response.getAccessToken()).isNotNull();
     }
 
     @Test
     void registerPlayersTest() {
-        api.createUsers(usersRequest());
-        List<UserModel> usersResponse = api.getAllUsers();
-        assertThat(usersResponse.size()).isEqualTo(12);
+        usersData().forEach(user -> api.controller().createUser(user));
+        List<UserResponse> usersResponse = api.controller().getUsers();
+        assertThat(usersResponse.size()).isEqualTo(usersData().size());
     }
 
     @Test
     void getAndVerifyUserTest() {
-        UserBody userRequest = usersRequest().get(0);
-        api.createUser(userRequest);
-        UserModel userResponse = api.getUser(userRequest.getEmail());
-        assertThat(userResponse.getName()).isEqualTo(userRequest.getName());
-        assertThat(userResponse.getEmail()).isEqualTo(userRequest.getEmail());
-        assertThat(userResponse.getSurname()).isEqualTo(userRequest.getSurname());
-        assertThat(userResponse.getUsername()).isEqualTo(userRequest.getUsername());
+        UserBody userBody = usersData().get(0);
+        api.controller().createUser(userBody);
+        UserResponse userResponse = api.controller().getUser(userBody.getEmail());
+        assertThat(userResponse).isEqualTo(userBody.toResponse());
     }
 
     @Test
     void getAndSortPlayersTest(){
-        api.createUsers(usersRequest());
-        List<UserModel> sortedUsersByName = api.sortUsersByName(api.getAllUsers());
-        assertThat(sortedUsersByName).isSortedAccordingTo(Comparator.comparing(UserModel::getName));
+        usersData().forEach(user -> api.controller().createUser(user));
+        List<UserResponse> sortedUsersByName = api.sortUsersByName(api.controller().getUsers());
+        assertThat(sortedUsersByName).isSortedAccordingTo(Comparator.comparing(user -> user.getName()));
     }
 
     @Test
     void deleteAllUsersTest(){
-        api.createUsers(usersRequest());
+        usersData().forEach(user -> api.controller().createUser(user));
         api.deleteAllUsers();
     }
 
     @Test
-    void verifyUsersListAfterDeletingTest(){
-        api.createUsers(usersRequest());
-        api.deleteAllUsers();
-        List<UserModel> usersResponse = api.getAllUsers();
+    void verifyUsersListIsEmptyTest(){
+        List<UserResponse> usersResponse = api.controller().getUsers();
         assertThat(usersResponse).isEmpty();
     }
 }
